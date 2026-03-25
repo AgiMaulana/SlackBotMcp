@@ -2,6 +2,8 @@
 
 An MCP (Model Context Protocol) server that lets Claude interact with Slack — send messages, read channels, and read threads as a bot.
 
+[![MCP Badge](https://lobehub.com/badge/mcp/agimaulana-slackbotmcp)](https://lobehub.com/mcp/agimaulana-slackbotmcp)
+
 ## Tools
 
 | Tool | Description |
