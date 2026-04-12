@@ -2,6 +2,7 @@
 Slack Bot MCP Server
 Posts messages as the bot itself (Alley) using the xoxb- token directly.
 """
+
 import json
 import os
 import urllib.parse
@@ -51,7 +52,7 @@ def send_message(
     message: str,
     thread_ts: str | None = None,
     reply_broadcast: bool = False,
-) -> str:
+) -> dict[str, Any]:
     """Send a message to a Slack channel or user DM as the bot (Alley).
     Use channel_id for channels (C...) or user_id (U...) for DMs.
     Set thread_ts to reply inside a thread.
@@ -66,7 +67,7 @@ def send_message(
     ts = result["ts"]
     channel = result["channel"]
     link = f"https://slack.com/archives/{channel}/p{ts.replace('.', '')}"
-    return json.dumps({"message_link": link, "ts": ts, "channel": channel})
+    return {"message_link": link, "ts": ts, "channel": channel}
 
 
 @mcp.tool()
@@ -116,9 +117,13 @@ def read_thread(channel_id: str, thread_ts: str, limit: int = 20) -> str:
 @mcp.tool()
 def search_channels(query: str, limit: int = 10) -> str:
     """Search for Slack channels by name."""
-    result = _slack_get("conversations.list", {"limit": 200, "types": "public_channel,private_channel"})
+    result = _slack_get(
+        "conversations.list", {"limit": 200, "types": "public_channel,private_channel"}
+    )
     channels = result.get("channels", [])
-    matches = [c for c in channels if query.lower() in c.get("name", "").lower()][:limit]
+    matches = [c for c in channels if query.lower() in c.get("name", "").lower()][
+        :limit
+    ]
     lines = [f"{c['id']} #{c['name']}" for c in matches]
     return "\n".join(lines) if lines else "(no matches)"
 
